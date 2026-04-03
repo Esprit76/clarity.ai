@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Silvia Mann-Kundt</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0f0f0f;
+    --paper: #f5f2ed;
+    --accent: #1a3a2a;
+    --gold: #b8933a;
+    --muted: #6b6458;
+    --line: rgba(15,15,15,0.1);
+    --serif: 'Cormorant Garamond', Georgia, serif;
+    --mono: 'DM Mono', monospace;
+    --sans: 'DM Sans', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-weight: 300;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 0;
+  }
+
+  /* HEADER */
+  header {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: 1.2rem 3rem;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid var(--line);
+    background: rgba(245,242,237,0.92);
+    backdrop-filter: blur(8px);
+  }
+  .logo { font-family: var(--serif); font-size: 1.1rem; font-weight: 400; letter-spacing: 0.04em; color: var(--accent); }
+  nav { display: flex; gap: 2rem; }
+  nav a {
+    font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.12em;
+    text-transform: uppercase; text-decoration: none; color: var(--muted); transition: color 0.2s;
+  }
+  nav a:hover { color: var(--ink); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 0 3rem 5rem;
+    position: relative; z-index: 1;
+  }
+  .hero-label {
+    font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--gold); margin-bottom: 1.2rem;
+    opacity: 0; animation: rise 0.8s ease 0.2s forwards;
+  }
+  .hero-name {
+    font-family: var(--serif); font-weight: 300;
+    font-size: clamp(3.5rem, 8vw, 7rem); line-height: 1.0; color: var(--accent);
+    opacity: 0; animation: rise 0.8s ease 0.4s forwards;
+  }
+  .hero-name em { font-style: italic; color: var(--gold); }
+  .hero-tagline {
+    font-family: var(--serif); font-style: italic;
+    font-size: clamp(1.05rem, 2vw, 1.45rem);
+    color: var(--muted); margin-top: 1.8rem; max-width: 560px; line-height: 1.55;
+    opacity: 0; animation: rise 0.8s ease 0.6s forwards;
+  }
+  .hero-line {
+    position: absolute; bottom: 0; left: 3rem;
+    width: 1px; height: 80px;
+    background: linear-gradient(to bottom, transparent, var(--gold));
+    opacity: 0; animation: rise 1s ease 1s forwards;
+  }
+  .hero-scroll {
+    position: absolute; bottom: 2.5rem; right: 3rem;
+    font-family: var(--mono); font-size: 0.55rem; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--muted); writing-mode: vertical-rl;
+    opacity: 0; animation: rise 1s ease 1.2s forwards;
+  }
+
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ABOUT */
+  #about {
+    padding: 8rem 3rem;
+    display: grid; grid-template-columns: 1fr 1.6fr; gap: 5rem;
+    align-items: start; position: relative; z-index: 1;
+    border-top: 1px solid var(--line);
+  }
+  .section-label {
+    font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--gold); margin-bottom: 2rem;
+  }
+  .about-left h2 {
+    font-family: var(--serif); font-size: clamp(1.8rem, 3vw, 2.8rem);
+    font-weight: 300; line-height: 1.15; color: var(--accent);
+  }
+  .about-right p { font-size: 1rem; color: #3a3530; margin-bottom: 1.2rem; line-height: 1.8; }
+  .about-right p.pull {
+    font-family: var(--serif); font-size: 1.2rem; font-style: italic;
+    color: var(--accent); line-height: 1.6; margin-bottom: 1.8rem;
+    border-left: 2px solid var(--gold); padding-left: 1.2rem;
+  }
+
+  .expertise-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 0;
+    margin-top: 2.5rem; border-top: 1px solid var(--line);
+  }
+  .expertise-item {
+    padding: 1.1rem 0; border-bottom: 1px solid var(--line); border-right: 1px solid var(--line);
+  }
+  .expertise-item:nth-child(even) { border-right: none; padding-left: 1.2rem; }
+  .expertise-item:nth-child(odd) { padding-right: 1.2rem; }
+  .expertise-item .tag {
+    font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--gold); display: block; margin-bottom: 0.3rem;
+  }
+  .expertise-item span { font-size: 0.88rem; color: var(--ink); }
+
+  /* THINKING — dark section */
+  #thinking {
+    padding: 8rem 3rem;
+    border-top: 1px solid var(--line);
+    position: relative; z-index: 1;
+    background: var(--accent);
+  }
+  #thinking .section-label { color: var(--gold); }
+  #thinking h2 {
+    font-family: var(--serif); font-size: clamp(2rem, 4vw, 3.5rem);
+    font-weight: 300; color: white; line-height: 1.15; margin-bottom: 0.5rem;
+    max-width: 720px;
+  }
+  #thinking h2 em { font-style: italic; color: var(--gold); }
+  #thinking .intro {
+    font-size: 0.95rem; color: rgba(255,255,255,0.45); max-width: 520px;
+    margin-top: 1rem; line-height: 1.7;
+  }
+
+  .thinking-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 0;
+    margin-top: 4rem; border-top: 1px solid rgba(255,255,255,0.1);
+  }
+  .thinking-item {
+    padding: 2rem 2rem 2rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    border-right: 1px solid rgba(255,255,255,0.07);
+  }
+  .thinking-item:nth-child(3n) { border-right: none; padding-left: 2rem; padding-right: 0; }
+  .thinking-item:nth-child(3n-1) { padding-left: 2rem; }
+  .thinking-item:nth-child(n+4) { border-bottom: none; }
+  .thinking-num {
+    font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.15em;
+    color: var(--gold); margin-bottom: 0.8rem; display: block;
+  }
+  .thinking-item h3 {
+    font-family: var(--serif); font-size: 1.15rem; font-weight: 400;
+    color: white; margin-bottom: 0.6rem; line-height: 1.3;
+  }
+  .thinking-item p { font-size: 0.85rem; color: rgba(255,255,255,0.45); line-height: 1.7; }
+
+  .thinking-bottom {
+    margin-top: 4rem; padding-top: 2rem;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .thinking-bottom p {
+    font-family: var(--serif); font-style: italic;
+    font-size: 1.1rem; color: rgba(255,255,255,0.3); max-width: 420px; line-height: 1.6;
+  }
+  .thinking-bottom .dots {
+    font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.2em;
+    color: var(--gold); opacity: 0.5;
+  }
+
+  /* CONTACT */
+  #contact {
+    padding: 8rem 3rem;
+    border-top: 1px solid var(--line);
+    display: grid; grid-template-columns: 1fr 1fr; gap: 5rem;
+    align-items: start; position: relative; z-index: 1;
+  }
+  #contact h2 {
+    font-family: var(--serif); font-size: clamp(1.8rem, 3vw, 2.8rem);
+    font-weight: 300; color: var(--accent); margin-bottom: 1rem;
+  }
+  #contact p { font-size: 0.95rem; color: var(--muted); line-height: 1.75; }
+
+  .contact-links { display: flex; flex-direction: column; gap: 1rem; margin-top: 2rem; }
+  .contact-link {
+    display: flex; align-items: center; gap: 1rem;
+    font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.08em;
+    text-decoration: none; color: var(--ink);
+    padding: 0.9rem 1.2rem; border: 1px solid var(--line);
+    border-radius: 3px; background: white;
+    transition: border-color 0.2s, transform 0.15s;
+  }
+  .contact-link:hover { border-color: var(--accent); transform: translateX(4px); }
+  .contact-link .cl-icon { color: var(--gold); }
+
+  /* FOOTER */
+  footer {
+    padding: 1.6rem 3rem;
+    border-top: 1px solid var(--line);
+    display: flex; align-items: center; justify-content: space-between;
+    position: relative; z-index: 1;
+  }
+  .f-logo { font-family: var(--serif); font-size: 0.95rem; color: var(--muted); }
+  .f-right { display: flex; align-items: center; gap: 2.5rem; }
+  .f-copy { font-family: var(--mono); font-size: 0.55rem; letter-spacing: 0.1em; color: var(--muted); opacity: 0.5; }
+  .f-link {
+    font-family: var(--mono); font-size: 0.55rem; letter-spacing: 0.1em;
+    color: var(--muted); opacity: 0.35; text-decoration: none; transition: opacity 0.25s;
+  }
+  .f-link:hover { opacity: 0.75; }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    header { padding: 1rem 1.5rem; }
+    nav { gap: 1.2rem; }
+    .hero { padding: 0 1.5rem 4rem; }
+    .hero-scroll { display: none; }
+    #about { padding: 5rem 1.5rem; grid-template-columns: 1fr; gap: 3rem; }
+    #thinking { padding: 5rem 1.5rem; }
+    .thinking-grid { grid-template-columns: 1fr; }
+    .thinking-item { border-right: none !important; padding-left: 0 !important; padding-right: 0 !important; border-bottom: 1px solid rgba(255,255,255,0.07) !important; }
+    .thinking-item:last-child { border-bottom: none !important; }
+    .thinking-bottom { flex-direction: column; gap: 1.5rem; align-items: flex-start; }
+    #contact { padding: 5rem 1.5rem; grid-template-columns: 1fr; gap: 3rem; }
+    footer { padding: 1.5rem; flex-direction: column; gap: 0.8rem; text-align: center; }
+    .f-right { flex-direction: column; gap: 0.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Silvia Mann-Kundt</div>
+  <nav>
+    <a href="#about">Profil</a>
+    <a href="#thinking">Themen</a>
+    <a href="#contact">Kontakt</a>
+  </nav>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-label">IT-Strategie · AI Governance · Organisationaler Wandel</div>
+  <h1 class="hero-name">Silvia<br><em>Mann-Kundt</em></h1>
+  <p class="hero-tagline">Komplexität ist kein Problem,<br>das gelöst werden muss.<br>Sie ist der Raum, in dem Zukunft entsteht.</p>
+  <div class="hero-line"></div>
+  <div class="hero-scroll">Scroll ↓</div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-left">
+    <div class="section-label">Profil</div>
+    <h2>Zwischen<br>System<br>und Mensch</h2>
+  </div>
+  <div class="about-right">
+    <p class="pull">Ich arbeite dort, wo Technologie auf Organisation trifft — und wo die eigentlichen Entscheidungen fallen.</p>
+    <p>Über eine Dekade Erfahrung in der IT-Führung großer Organisationen hat mir eines beigebracht: Die schwierigsten Fragen in Transformationsprojekten sind selten technischer Natur. Sie sind semantischer, kultureller, menschlicher Natur.</p>
+    <p>Mein Fokus liegt auf AI Governance, strategischer IT-Führung und der Frage, wie Organisationen Komplexität nicht nur managen — sondern produktiv machen.</p>
+
+    <div class="expertise-grid">
+      <div class="expertise-item">
+        <span class="tag">Strategie</span>
+        <span>IT-Strategie & Demand Management</span>
+      </div>
+      <div class="expertise-item">
+        <span class="tag">Governance</span>
+        <span>AI Governance & EU AI Act</span>
+      </div>
+      <div class="expertise-item">
+        <span class="tag">Technologie</span>
+        <span>SaaS · Cloud · Systemtransformation</span>
+      </div>
+      <div class="expertise-item">
+        <span class="tag">Branche</span>
+        <span>Versicherung · Finanzdienstleistung</span>
+      </div>
+      <div class="expertise-item">
+        <span class="tag">Führung</span>
+        <span>Große IT-Organisationen · Budget</span>
+      </div>
+      <div class="expertise-item">
+        <span class="tag">Denken</span>
+        <span>Komplexität · Bedeutung · Wandel</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- THINKING -->
+<section id="thinking">
+  <div class="section-label">Was mich beschäftigt</div>
+  <h2>Etwas entsteht.<br>Noch <em>nicht bereit</em><br>für die Öffentlichkeit.</h2>
+  <p class="intro">Gedanken, die sich verdichten. Ansätze, die Form annehmen. Ideen, die noch nicht fertig sind — aber zu gut, um sie zu verschweigen.</p>
+
+  <div class="thinking-grid">
+
+    <div class="thinking-item">
+      <span class="thinking-num">01</span>
+      <h3>Sprache als Führungsinstrument</h3>
+      <p>Organisationen scheitern nicht an schlechten Strategien. Sie scheitern daran, dass dieselben Wörter auf jeder Ebene verschiedene Dinge bedeuten — und niemand es bemerkt.</p>
+    </div>
+
+    <div class="thinking-item">
+      <span class="thinking-num">02</span>
+      <h3>KI braucht Bedeutungsarchitektur</h3>
+      <p>AI Governance ist nicht nur ein Compliance-Thema. Es ist die Frage, welche Werte und Entscheidungslogiken wir in Systeme einschreiben — und wer dafür die Verantwortung trägt.</p>
+    </div>
+
+    <div class="thinking-item">
+      <span class="thinking-num">03</span>
+      <h3>Komplexität lesbar machen</h3>
+      <p>Die übliche Reaktion auf Komplexität ist Vereinfachung. Der eigentliche Hebel liegt darin, sie lesbar zu machen — als Information, nicht als Störung.</p>
+    </div>
+
+    <div class="thinking-item">
+      <span class="thinking-num">04</span>
+      <h3>Transformation von innen</h3>
+      <p>Echter Wandel entsteht nicht durch neue Strukturen. Er entsteht, wenn Menschen anfangen, die Wirklichkeit anders zu beschreiben — und dadurch anders zu handeln.</p>
+    </div>
+
+    <div class="thinking-item">
+      <span class="thinking-num">05</span>
+      <h3>Das Semantic Gap in Konzernen</h3>
+      <p>Zwischen Vorstand und Umsetzung entstehen Bedeutungslücken, die keine Präsentation schließt. Wer diese Lücken sichtbar macht, verändert mehr als jeder Prozess es könnte.</p>
+    </div>
+
+    <div class="thinking-item">
+      <span class="thinking-num">06</span>
+      <h3>Was kommt</h3>
+      <p>Ein Ansatz verdichtet sich. Eine Zusammenarbeit nimmt Form an. Mehr dazu, wenn die Zeit reif ist — und die richtigen Menschen am Tisch sitzen.</p>
+    </div>
+
+  </div>
+
+  <div class="thinking-bottom">
+    <p>Wenn Sie das Gefühl haben, dass Sie wissen, wovon ich spreche — dann sind Sie vermutlich genau die richtige Person, mit der ich sprechen sollte.</p>
+    <span class="dots">· · · · · ·</span>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div>
+    <div class="section-label">Kontakt</div>
+    <h2>Sprechen<br>wir.</h2>
+    <p>Wenn Sie an der Schnittstelle von Technologie, Governance und organisationalem Wandel arbeiten — und das Gefühl haben, dass da mehr möglich ist: Ich freue mich auf das Gespräch.</p>
+  </div>
+  <div>
+    <div class="contact-links">
+      <a class="contact-link" href="mailto:Silvia.Mann-Kundt@outlook.com">
+        <span class="cl-icon">✉</span>
+        <span>Silvia.Mann-Kundt@outlook.com</span>
+      </a>
+      <a class="contact-link" href="https://www.linkedin.com/in/silvia-mann-kundt/" target="_blank">
+        <span class="cl-icon">in</span>
+        <span>LinkedIn</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="f-logo">Silvia Mann-Kundt</div>
+  <div class="f-right">
+    <a class="f-link" href="clarity.ai/ai-governance-advisory-sribble.html" title="clarity.ai">◎ clarity.ai</a>
+    <span class="f-copy">Baden-Württemberg · © 2026</span>
+  </div>
+</footer>
+
+</body>
+</html>
