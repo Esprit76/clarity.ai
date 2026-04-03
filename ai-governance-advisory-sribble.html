@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>clarity.ai — AI Governance Advisory</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Mono:wght@300;400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0f0f0f;
+    --paper: #f5f2ed;
+    --accent: #1a3a2a;
+    --gold: #b8933a;
+    --muted: #6b6458;
+    --line: rgba(15,15,15,0.12);
+    --serif: 'Cormorant Garamond', Georgia, serif;
+    --mono: 'DM Mono', monospace;
+    --sans: 'DM Sans', sans-serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-weight: 300;
+    line-height: 1.6;
+  }
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1rem 2rem;
+    background: var(--paper);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav-logo {
+    font-family: var(--serif);
+    font-size: 1.3rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--accent);
+  }
+  .nav-logo span { color: var(--gold); }
+  .nav-tabs { display: flex; gap: 0.15rem; list-style: none; flex-wrap: wrap; }
+  .nav-tabs li a {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--muted);
+    padding: 0.4rem 0.8rem;
+    border: 1px solid transparent;
+    border-radius: 2px;
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+  .nav-tabs li a:hover, .nav-tabs li a.active {
+    color: var(--ink);
+    border-color: var(--line);
+    background: white;
+  }
+  section {
+    display: none;
+    min-height: 100vh;
+    padding: 6rem 2.5rem 4rem;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  section.active { display: block; }
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.6rem;
+  }
+  h1 {
+    font-family: var(--serif);
+    font-size: clamp(2.2rem, 4vw, 3.8rem);
+    font-weight: 300;
+    line-height: 1.1;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+  }
+  h2 {
+    font-family: var(--serif);
+    font-size: clamp(1.4rem, 2.5vw, 2rem);
+    font-weight: 300;
+    color: var(--accent);
+    margin-bottom: 1rem;
+  }
+  h3 {
+    font-family: var(--serif);
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+  p { font-size: 0.92rem; color: #3a3530; margin-bottom: 0.9rem; }
+  .lead {
+    font-size: 1.05rem;
+    font-weight: 300;
+    line-height: 1.7;
+    color: var(--muted);
+    max-width: 640px;
+    margin-bottom: 2rem;
+  }
+  .divider { border: none; border-top: 1px solid var(--line); margin: 2rem 0; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.2rem; }
+  .card {
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 1.5rem;
+  }
+  .card-accent {
+    background: var(--accent);
+    color: white;
+    border: none;
+  }
+  .card-accent h3 { color: white; }
+  .card-accent .eyebrow { color: var(--gold); }
+  .card-accent p { color: rgba(255,255,255,0.82); }
+  .card-gold { border-left: 3px solid var(--gold); padding-left: 1.3rem; }
+  .tag {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background: var(--accent);
+    color: white;
+    padding: 0.2rem 0.6rem;
+    border-radius: 2px;
+    margin-bottom: 0.8rem;
+  }
+  .big-number {
+    font-family: var(--serif);
+    font-size: 3.5rem;
+    font-weight: 300;
+    color: var(--gold);
+    line-height: 1;
+    margin-bottom: 0.5rem;
+  }
+  table { width: 100%; border-collapse: collapse; font-size: 0.86rem; margin-bottom: 1.5rem; }
+  th {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 0.6rem 0.9rem;
+    border-bottom: 2px solid var(--ink);
+    text-align: left;
+  }
+  td { padding: 0.75rem 0.9rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.5); }
+  .timeline { position: relative; }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 2rem; top: 0; bottom: 0;
+    width: 1px;
+    background: var(--line);
+  }
+  .timeline-item { display: flex; gap: 1.2rem; margin-bottom: 2rem; position: relative; }
+  .timeline-dot {
+    flex-shrink: 0;
+    width: 40px; height: 40px;
+    background: var(--accent);
+    color: white;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    position: relative; z-index: 1;
+  }
+  .timeline-dot.gold { background: var(--gold); }
+  .timeline-content { padding-top: 0.3rem; }
+  blockquote {
+    border-left: 3px solid var(--gold);
+    padding: 0.8rem 1.2rem;
+    margin: 1.5rem 0;
+    font-family: var(--serif);
+    font-size: 1.2rem;
+    font-weight: 300;
+    line-height: 1.5;
+    color: var(--accent);
+    font-style: italic;
+  }
+  .profile { display: flex; gap: 1.2rem; align-items: flex-start; margin-bottom: 1.5rem; }
+  .profile-initial {
+    flex-shrink: 0; width: 52px; height: 52px;
+    background: var(--accent); color: var(--gold);
+    font-family: var(--serif); font-size: 1.4rem; font-weight: 600;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 3px;
+  }
+  .pill-list { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.6rem; margin-bottom: 0.8rem; }
+  .pill {
+    font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.05em;
+    padding: 0.25rem 0.7rem; border: 1px solid var(--line);
+    border-radius: 20px; color: var(--muted);
+  }
+  .check-list { list-style: none; }
+  .check-list li {
+    font-size: 0.88rem; padding: 0.45rem 0;
+    border-bottom: 1px solid var(--line);
+    display: flex; gap: 0.7rem; align-items: flex-start;
+  }
+  .check-list li::before { content: '→'; color: var(--gold); font-family: var(--mono); flex-shrink: 0; margin-top: 0.05rem; }
+  .footer-note {
+    font-family: var(--mono); font-size: 0.62rem; color: var(--muted);
+    letter-spacing: 0.08em; margin-top: 3rem; padding-top: 1.2rem;
+    border-top: 1px solid var(--line);
+  }
+  @media (max-width: 640px) {
+    nav { padding: 0.8rem 1rem; flex-direction: column; gap: 0.5rem; }
+    .nav-tabs li a { font-size: 0.58rem; padding: 0.3rem 0.5rem; }
+    section { padding: 8rem 1.2rem 3rem; }
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+  }
+
+  /* ── LOGIN SCREEN ── */
+  #login-screen {
+    position: fixed; inset: 0; z-index: 999;
+    background: var(--paper);
+    display: flex; align-items: center; justify-content: center;
+    padding: 2rem;
+    animation: fadeIn 0.5s ease;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .login-box { width: 100%; max-width: 400px; text-align: center; }
+  .login-logo {
+    font-family: var(--serif); font-size: 2.8rem; font-weight: 300;
+    color: var(--accent); letter-spacing: 0.02em; margin-bottom: 0.3rem;
+  }
+  .login-logo span { color: var(--gold); }
+  .login-eyebrow {
+    font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 2.5rem;
+  }
+  .login-divider {
+    width: 32px; height: 1px; background: var(--gold);
+    margin: 0 auto 2.5rem;
+  }
+  .login-label {
+    font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--muted);
+    display: block; text-align: left; margin-bottom: 0.5rem;
+  }
+  .login-input {
+    width: 100%; padding: 0.85rem 1rem;
+    font-family: var(--mono); font-size: 0.9rem; letter-spacing: 0.12em;
+    background: white; border: 1px solid var(--line); border-radius: 3px;
+    color: var(--ink); outline: none; transition: border-color 0.2s;
+    margin-bottom: 1rem;
+  }
+  .login-input:focus { border-color: var(--accent); }
+  .login-input.error { border-color: #c62828; animation: shake 0.3s ease; }
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-6px); }
+    75% { transform: translateX(6px); }
+  }
+  .login-btn {
+    width: 100%; padding: 0.85rem 1rem;
+    font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.14em;
+    text-transform: uppercase; background: var(--accent); color: white;
+    border: none; border-radius: 3px; cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+  }
+  .login-btn:hover { background: #0f2419; }
+  .login-btn:active { transform: scale(0.98); }
+  .login-error {
+    font-family: var(--mono); font-size: 0.63rem; color: #c62828;
+    letter-spacing: 0.08em; margin-top: 0.7rem; min-height: 1rem;
+  }
+  .login-hint {
+    font-family: var(--mono); font-size: 0.56rem; color: var(--muted);
+    letter-spacing: 0.08em; margin-top: 2rem; opacity: 0.6; line-height: 1.6;
+  }
+  .lock-btn {
+    font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--muted); background: none;
+    border: 1px solid var(--line); padding: 0.35rem 0.7rem;
+    border-radius: 2px; cursor: pointer; transition: all 0.2s; margin-left: 1rem;
+  }
+  .lock-btn:hover { color: var(--ink); border-color: var(--ink); }
+  #main-content { display: none; }
+</style>
+</head>
+<body>
+
+<!-- ── LOGIN SCREEN ── -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">clarity<span>.</span>ai</div>
+    <div class="login-eyebrow">AI Governance Advisory · Vertraulich</div>
+    <div class="login-divider"></div>
+    <label class="login-label" for="pw-input">Zugangspasswort</label>
+    <input
+      type="password"
+      id="pw-input"
+      class="login-input"
+      placeholder="••••••••"
+      autocomplete="current-password"
+      onkeydown="if(event.key==='Enter') checkPassword()"
+    >
+    <button class="login-btn" onclick="checkPassword()">Zugang öffnen</button>
+    <div class="login-error" id="login-error"></div>
+    <div class="login-hint">Dieses Dokument ist passwortgeschützt.<br>Bitte wende dich an Silvia Mann-Kundt.</div>
+  </div>
+</div>
+
+<!-- ── GESCHÜTZTER INHALT ── -->
+<div id="main-content">
+
+<nav>
+  <div class="nav-logo">clarity<span>.</span>ai</div>
+  <div style="display:flex;align-items:center;">
+    <ul class="nav-tabs">
+      <li><a class="active" onclick="show('onepager',this)">01 · Positionierung</a></li>
+      <li><a onclick="show('pitch',this)">02 · Pitch Deck</a></li>
+      <li><a onclick="show('businessplan',this)">03 · Geschäftsplan</a></li>
+      <li><a onclick="show('erstgespraech',this)">04 · Erstgespräch</a></li>
+    </ul>
+    <button class="lock-btn" onclick="lock()">⎠ Sperren</button>
+  </div>
+</nav>
+
+<!-- 01 POSITIONIERUNG -->
+<section id="onepager" class="active">
+  <div class="eyebrow">Positionierungsdokument · 1-Pager</div>
+  <h1>AI Governance<br>Advisory</h1>
+  <p class="lead">Versicherungsunternehmen navigieren den EU AI Act, führen KI-Systeme ein und unterschätzen dabei systematisch den menschlichen Wandel. Wir schließen diese Lücke.</p>
+  <hr class="divider">
+  <div class="grid-2">
+    <div>
+      <div class="eyebrow">Das Problem</div>
+      <h2>Technik allein transformiert nicht</h2>
+      <p>Versicherungsunternehmen investieren massiv in KI — Underwriting-Automation, Claims-Processing, Kundenkommunikation. Der EU AI Act tritt mit verbindlichen Anforderungen in Kraft. Die meisten Häuser haben weder eine tragfähige AI-Governance-Struktur noch die Führungskultur, um den Wandel zu verankern.</p>
+      <p>Technologieberater liefern Frameworks. Organisationsberater begleiten Menschen. Wer verbindet beides?</p>
+    </div>
+    <div class="card card-accent">
+      <div class="eyebrow">Unsere Antwort</div>
+      <h3 style="font-family:var(--serif);font-size:1.3rem;margin-bottom:0.8rem;">Zwei Perspektiven.<br>Eine Lösung.</h3>
+      <p><strong style="color:white;">Silvia Mann-Kundt</strong><br>IT-Strategie · AI Governance · SaaS/Cloud · Versicherungs-IT (F1-Ebene, W&W)</p>
+      <hr style="border-color:rgba(255,255,255,0.15);margin:0.8rem 0;">
+      <p><strong style="color:white;">Corinna Maag</strong><br>Systemische Organisationsberaterin & Coach · 15+ Jahre Führungserfahrung in der Industrie · Ausgebildet nach SySt® (München), Trigon (Metaforum) und Realkonstruktivismus · Spezialisiert auf systemische Strukturaufstellungen, Organisationsentwicklung und Führungsbegleitung in komplexen Wandelprozessen</p>
+    </div>
+  </div>
+  <hr class="divider">
+  <div class="eyebrow">Leistungsangebot</div>
+  <h2>Was wir liefern</h2>
+  <div class="grid-3">
+    <div class="card">
+      <div class="tag">Governance</div>
+      <h3>AI Readiness Assessment</h3>
+      <p>Analyse des aktuellen AI-Einsatzes, Gap-Assessment gegen EU AI Act, Risikobewertung — technisch und organisational.</p>
+    </div>
+    <div class="card">
+      <div class="tag">Strategie</div>
+      <h3>AI Governance Framework</h3>
+      <p>Aufbau einer praxistauglichen Governance-Struktur: Rollen, Prozesse, Policies — kompatibel mit BaFin-Anforderungen.</p>
+    </div>
+    <div class="card">
+      <div class="tag">Wandel</div>
+      <h3>Leadership Enablement</h3>
+      <p>Begleitung des Vorstands und der Führungsebene nach systemischer Methodik (SySt®, Trigon): Entscheidungsfähigkeit bei AI stärken, Widerstände durch Aufstellungsarbeit bearbeiten, Muster in der Organisation sichtbar machen — und nachhaltig verändern.</p>
+    </div>
+  </div>
+  <hr class="divider">
+  <div class="grid-2">
+    <div>
+      <div class="eyebrow">Zielgruppe</div>
+      <h2>Für wen</h2>
+      <ul class="check-list">
+        <li>Mittelständische Erstversicherer im DACH-Raum (250–2.500 MA)</li>
+        <li>Versicherungsnahe Software-Unternehmen (msg-Gruppe, FJA etc.)</li>
+        <li>Vorstände und CIOs, die KI einführen und regulatorisch sicher bleiben wollen</li>
+        <li>IT-Führungskräfte, die intern Akzeptanz für AI-Initiativen aufbauen müssen</li>
+      </ul>
+    </div>
+    <div>
+      <div class="eyebrow">Alleinstellung</div>
+      <h2>Warum wir</h2>
+      <div class="card card-gold">
+        <p>Wir sind keine Unternehmensberatung mit 500 Folien. Wir sind zwei erfahrene Praktikerinnen, die beide Seiten der Transformation kennen — die Systeme und die Menschen. Corinna bringt systemtheoretisch fundierte Methodik (SySt®, Trigon, Strukturaufstellungen) ein, die Muster in Organisationen sichtbar macht, die kein Dashboard zeigt. Silvia bringt die Praxistiefe aus einer Dekade Versicherungs-IT auf Vorstandsebene.</p>
+      </div>
+    </div>
+  </div>
+  <hr class="divider">
+  <div class="grid-3">
+    <div style="text-align:center;padding:1.2rem;">
+      <div class="big-number">€</div>
+      <h3>Retainer-Modell</h3>
+      <p style="font-size:0.82rem;">Monatliche Advisory-Pauschale für kontinuierliche Begleitung</p>
+    </div>
+    <div style="text-align:center;padding:1.2rem;">
+      <div class="big-number">⌂</div>
+      <h3>Projektmandate</h3>
+      <p style="font-size:0.82rem;">Definierte Projektaufträge mit klarem Scope und Deliverables</p>
+    </div>
+    <div style="text-align:center;padding:1.2rem;">
+      <div class="big-number">◎</div>
+      <h3>Workshops</h3>
+      <p style="font-size:0.82rem;">Halbtages- und Tagesformate für Vorstände und Führungsteams</p>
+    </div>
+  </div>
+  <div class="footer-note">clarity.ai · Silvia Mann-Kundt & Corinna Maag · Baden-Württemberg / Stuttgart · Entwurf 2026</div>
+</section>
+
+<!-- 02 PITCH DECK -->
+<section id="pitch">
+  <div class="eyebrow">Pitch Deck Struktur · 10 Slides</div>
+  <h1>Slide-für-Slide<br>Aufbau</h1>
+  <p class="lead">Eine Schritt-für-Schritt-Struktur für das Erstgespräch mit potenziellen Kunden oder Partnern — mit konkretem Inhalt je Folie.</p>
+  <hr class="divider">
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-dot">01</div>
+      <div class="timeline-content">
+        <div class="eyebrow">Opening</div>
+        <h3>Der ungemütliche Status Quo</h3>
+        <p>Einstieg mit einer provokanten These: <em>„Ihr AI-Projekt wird scheitern — nicht an der Technologie."</em> Kurzstatistik: >60% der AI-Transformationen in Finanzdienstleistung verfehlen ihre Ziele. Ursache: Governance-Lücken und fehlende Führungskultur.</p>
+        <div class="pill-list"><span class="pill">1 Folie</span><span class="pill">kein Logo</span><span class="pill">starke Aussage</span></div>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot">02</div>
+      <div class="timeline-content">
+        <div class="eyebrow">Kontext</div>
+        <h3>Der EU AI Act verändert die Spielregeln</h3>
+        <p>Überblick: Was bedeutet der EU AI Act für Versicherungen? Risikokategorien, Zeitplan, Pflichten. Typisches Bild: Vorstände wissen, dass sie handeln müssen — aber wer führt das durch?</p>
+        <div class="pill-list"><span class="pill">Zeitachse EU AI Act</span><span class="pill">BaFin-Bezug</span></div>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot">03</div>
+      <div class="timeline-content">
+        <div class="eyebrow">Das Problem</div>
+        <h3>Die zwei Welten, die nicht sprechen</h3>
+        <p>Visualisierung: Links die IT/Tech-Seite (Architektur, Compliance, Systeme), rechts die Führungs-/Kulturseite (implizite Muster, Entscheidungsdynamiken, Akzeptanz). Die Lücke dazwischen ist der Ort, an dem Transformationen scheitern — und den klassische Beratung mit Frameworks allein nicht schließt. Was fehlt: eine systemische Perspektive, die Organisationen als lebende Systeme versteht, nicht als Org-Charts.</p>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot">04</div>
+      <div class="timeline-content">
+        <div class="eyebrow">Lösung</div>
+        <h3>clarity.ai — das Tandem-Modell</h3>
+        <p>Zwei Expertinnen, eine Einheit. Klare Rollenteilung — Silvia bringt die technisch-strategische Tiefe, Corinna die systemische Begleitung. Kein Subcontracting, keine Juniorteams.</p>
+        <div class="pill-list"><span class="pill">Positionierungsgrafik</span><span class="pill">Portraits</span></div>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot">05</div>
+      <div class="timeline-content">
+        <div class="eyebrow">Profile</div>
+        <h3>Wer wir sind — Glaubwürdigkeit</h3>
+        <p><strong>Silvia:</strong> Dekade IT-Führung auf F1-Ebene (W&W), AI-Pilotprojekte, Legacy-Migration, msg nexinsure. <strong>Corinna:</strong> 15+ Jahre Führungskraft in der Industrie, dann Ausbildung zur systemischen Beraterin (SySt® Institut München, Trigon/Metaforum), Spezialisierung auf Strukturaufstellungsarbeit und Realkonstruktivismus — eine Methodik, die verborgene Organisationsmuster und Entscheidungsblockaden präzise sichtbar macht.</p>
+        <div class="pill-list"><span class="pill">SySt® München</span><span class="pill">Trigon · Metaforum</span><span class="pill">Realkonstruktivismus</span><span class="pill">W&W · msg nexinsure</span></div>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot gold">06</div>
+      <div class="timeline-content">
+        <div class="eyebrow">Leistungen</div>
+        <h3>Unsere drei Kernleistungen</h3>
+        <p><strong>1. AI Readiness Assessment</strong> — Technische Gap-Analyse (EU AI Act, BaFin) plus systemische Organisationsdiagnose: Wo blockiert das System sich selbst? <strong>2. AI Governance Framework</strong> — Rollen, Prozesse, Policies — entwickelt mit und nicht für die Organisation. <strong>3. Leadership Enablement</strong> — Systemische Begleitung mit Strukturaufstellungen, Realkonstruktivismus und Trigon-Methodik: Führungskräfte entwickeln echte Handlungsfähigkeit, nicht nur Wissen.</p>
+        <div class="pill-list"><span class="pill">3 Module</span><span class="pill">modular buchbar</span><span class="pill">systemisch fundiert</span></div>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot gold">07</div>
+      <div class="timeline-content">
+        <div class="eyebrow">Vorgehen</div>
+        <h3>Typischer Projektverlauf (90 Tage)</h3>
+        <p>Phase 1 (Wochen 1–4): Assessment & Diagnose. Phase 2 (Wochen 5–10): Framework-Entwicklung + parallele Führungsbegleitung. Phase 3 (Wochen 11–13): Pilotierung, Übergabe, Retainer-Angebot.</p>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot">08</div>
+      <div class="timeline-content">
+        <div class="eyebrow">Markt</div>
+        <h3>Warum jetzt</h3>
+        <p>EU AI Act: volle Anwendung ab August 2026. BaFin-Erwartungen steigen. KI-Investitionen in der Versicherungsbranche verdoppeln sich bis 2027. Fenster für First-Mover-Positionierung als spezialisiertes Boutique-Angebot: jetzt.</p>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot">09</div>
+      <div class="timeline-content">
+        <div class="eyebrow">Preismodell</div>
+        <h3>Einfach und transparent</h3>
+        <p><strong>Einstieg:</strong> AI Readiness Workshop (Halbtag) als niedrigschwelliger Test. <strong>Projekt:</strong> 90-Tage-Mandat, Festpreis. <strong>Kontinuität:</strong> Monatlicher Retainer. Keine Überraschungen.</p>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot">10</div>
+      <div class="timeline-content">
+        <div class="eyebrow">Call to Action</div>
+        <h3>Der nächste Schritt</h3>
+        <p>Einladung zu einem 60-minütigen <em>AI Governance Sparring</em> — kostenlos, ohne Verkaufsdruck. Ziel: Gemeinsam den dringendsten Engpass identifizieren. Konkret, direkt, wertvoll.</p>
+        <div class="pill-list"><span class="pill">Kontaktdaten</span><span class="pill">kein Formular</span></div>
+      </div>
+    </div>
+  </div>
+  <hr class="divider">
+  <blockquote>„Zeige keine Lösung, bevor das Problem sitzt."<br><span style="font-size:0.85rem;color:var(--muted);">Grundprinzip für die Präsentation</span></blockquote>
+  <div class="footer-note">clarity.ai · Pitch Deck Struktur · Entwurf 2026</div>
+</section>
+
+<!-- 03 GESCHÄFTSPLAN -->
+<section id="businessplan">
+  <div class="eyebrow">Geschäftsplan-Entwurf</div>
+  <h1>Markt · Modell<br>Finanzen</h1>
+  <p class="lead">Ein kompakter, realistischer Businessplan für das erste Betriebsjahr — keine Investor-Präsentation, sondern eine Arbeitsgrundlage für beide Gründerinnen.</p>
+  <hr class="divider">
+  <h2>0. Methodische Grundlage</h2>
+  <div class="grid-2">
+    <div class="card card-accent">
+      <div class="eyebrow">Corinna Maags Ausbildung</div>
+      <h3 style="color:white;">Systemtheorie als Wettbewerbsvorteil</h3>
+      <p>Corinna ist ausgebildete systemische Beraterin mit drei komplementären Ausbildungssträngen:</p>
+      <p><strong style="color:white;">SySt® Institut München</strong> — Systemische Strukturaufstellungsarbeit und Organisationsberatung nach dem Münchner Modell: präzise Methodik zur Sichtbarmachung von Beziehungsdynamiken und Entscheidungsmustern in Organisationen.</p>
+      <p><strong style="color:white;">Trigon / Metaforum (Abano, Italien)</strong> — Organisationsentwicklung nach Trigon-Ansatz: ganzheitliche Veränderungsbegleitung, die betriebswirtschaftliche und menschliche Dimensionen integriert.</p>
+      <p><strong style="color:white;">Realkonstruktivismus</strong> — Neuerer Ansatz, der rationale Analyse mit körperlicher Wahrnehmung verbindet: besonders wirksam bei der Vorbereitung schwieriger Gespräche und bei Entscheidungen unter Ambiguität — dem Alltag jeder AI-Transformation.</p>
+    </div>
+    <div>
+      <div class="eyebrow">Warum das für AI Governance relevant ist</div>
+      <h2>Organisationen sind keine Maschinen</h2>
+      <p>AI Governance scheitert selten an fehlenden Policies — sondern daran, dass Organisationen als komplexe soziale Systeme auf Veränderung reagieren: mit Abwehr, Koalitionsbildung, Scheinzustimmung und impliziten Gegenstrategien.</p>
+      <p>Systemische Methodik erkennt diese Muster frühzeitig, macht sie besprechbar und schafft die Voraussetzung für echte Veränderung — nicht nur für Compliance-Dokumentation.</p>
+      <ul class="check-list" style="margin-top:1rem;">
+        <li>Aufstellungsarbeit zeigt, wo AI-Initiativen im System wirklich hängen</li>
+        <li>Trigon-Methodik verankert Governance in der Führungskultur</li>
+        <li>Realkonstruktivismus hilft Führungskräften, unter Unsicherheit zu entscheiden</li>
+      </ul>
+    </div>
+  </div>
+  <hr class="divider">
+  <h2>1. Markteinschätzung</h2>
+  <div class="grid-2">
+    <div class="card">
+      <div class="eyebrow">Zielmarkt DACH</div>
+      <h3>~150–200 relevante Unternehmen</h3>
+      <p>Mittelständische Erstversicherer (50–500 Mio. € Prämienvolumen), versicherungsnahe IT-Anbieter, Maklerverbünde mit eigener IT. Konzentration in BW, Bayern, NRW, Hessen.</p>
+    </div>
+    <div class="card">
+      <div class="eyebrow">Trigger-Ereignisse</div>
+      <h3>Drei Kaufmotive</h3>
+      <ul class="check-list">
+        <li>EU AI Act — Compliance-Druck (Deadline August 2026)</li>
+        <li>KI-Einführung mit intern fehlendem Governance-Know-how</li>
+        <li>Gescheiterte AI-Piloten, die neu aufgesetzt werden sollen</li>
+      </ul>
+    </div>
+  </div>
+  <hr class="divider">
+  <h2>2. Leistungs- & Preisarchitektur</h2>
+  <table>
+    <thead><tr><th>Produkt</th><th>Format</th><th>Preis (netto)</th><th>Häufigkeit</th></tr></thead>
+    <tbody>
+      <tr><td><strong>AI Governance Sparring</strong></td><td>60 Min. online</td><td>kostenlos (Akquise)</td><td>4–6× / Monat</td></tr>
+      <tr><td><strong>AI Readiness Workshop</strong></td><td>Halbtag vor Ort</td><td>€ 3.500</td><td>Einstiegsformat</td></tr>
+      <tr><td><strong>AI Governance Assessment</strong></td><td>2–3 Wochen</td><td>€ 12.000–18.000</td><td>1× pro Kunde</td></tr>
+      <tr><td><strong>90-Tage Transformationsmandat</strong></td><td>Projekt</td><td>€ 45.000–75.000</td><td>2–3 parallel möglich</td></tr>
+      <tr><td><strong>Retainer Advisory</strong></td><td>4–8 Tage/Monat</td><td>€ 6.000–10.000 / Monat</td><td>Recurring Revenue</td></tr>
+    </tbody>
+  </table>
+  <hr class="divider">
+  <h2>3. Finanzplan Jahr 1</h2>
+  <div class="grid-2">
+    <div>
+      <div class="eyebrow">Konservatives Szenario</div>
+      <table>
+        <thead><tr><th>Position</th><th>Betrag</th></tr></thead>
+        <tbody>
+          <tr><td>2× Readiness Workshop</td><td>€ 7.000</td></tr>
+          <tr><td>3× Assessment</td><td>€ 42.000</td></tr>
+          <tr><td>1× 90-Tage-Mandat</td><td>€ 50.000</td></tr>
+          <tr><td>2× Retainer (à 6 Mo.)</td><td>€ 72.000</td></tr>
+          <tr><td><strong>Gesamt Umsatz</strong></td><td><strong>€ 171.000</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div>
+      <div class="eyebrow">Ambitioniertes Szenario</div>
+      <table>
+        <thead><tr><th>Position</th><th>Betrag</th></tr></thead>
+        <tbody>
+          <tr><td>4× Readiness Workshop</td><td>€ 14.000</td></tr>
+          <tr><td>5× Assessment</td><td>€ 75.000</td></tr>
+          <tr><td>2× 90-Tage-Mandat</td><td>€ 120.000</td></tr>
+          <tr><td>4× Retainer (à 6 Mo.)</td><td>€ 144.000</td></tr>
+          <tr><td><strong>Gesamt Umsatz</strong></td><td><strong>€ 353.000</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="card card-gold" style="margin-top:1.2rem;">
+    <p><strong>Split-Logik (Vorschlag):</strong> 50/50 Grundsplit je abgerechnetem Tag. Bei Mandaten, an denen nur eine Person arbeitet, behält diese 80% — 20% gehen in den gemeinsamen Marken-Pool (Website, Veranstaltungen, Akquise). Umsetzbar über GbR oder getrennte Einzelunternehmen mit Kooperationsvertrag.</p>
+  </div>
+  <hr class="divider">
+  <h2>4. Kosten & Investitionen</h2>
+  <table>
+    <thead><tr><th>Position</th><th>Einmalig</th><th>Laufend / Jahr</th></tr></thead>
+    <tbody>
+      <tr><td>Gemeinsame Website / Marke</td><td>€ 3.000–5.000</td><td>€ 600</td></tr>
+      <tr><td>Rechtliche Struktur (Kooperationsvertrag)</td><td>€ 1.500</td><td>—</td></tr>
+      <tr><td>Berufshaftpflicht</td><td>—</td><td>€ 2.400</td></tr>
+      <tr><td>Veranstaltungen / Netzwerk</td><td>—</td><td>€ 3.000</td></tr>
+      <tr><td>Tools (CRM, Rechnungsstellung)</td><td>—</td><td>€ 1.200</td></tr>
+      <tr><td><strong>Gesamt</strong></td><td><strong>€ 6.500–8.000</strong></td><td><strong>€ 7.200</strong></td></tr>
+    </tbody>
+  </table>
+  <hr class="divider">
+  <h2>5. Meilensteine Jahr 1</h2>
+  <div class="grid-2">
+    <div>
+      <ul class="check-list">
+        <li><strong>Monat 1–2:</strong> Marke definieren, Website live, je 10 Erstgespräche aus bestehendem Netzwerk</li>
+        <li><strong>Monat 3:</strong> Erster bezahlter Workshop — Referenz aufbauen</li>
+        <li><strong>Monat 4–6:</strong> Erstes Assessment-Mandat abschließen</li>
+      </ul>
+    </div>
+    <div>
+      <ul class="check-list">
+        <li><strong>Monat 6:</strong> Erster Retainer-Kunde</li>
+        <li><strong>Monat 9:</strong> Erstes 90-Tage-Mandat gestartet</li>
+        <li><strong>Monat 12:</strong> Bewertung: Positionierung schärfen, Team erweitern oder Nische vertiefen</li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-note">clarity.ai · Geschäftsplan Entwurf v1.0 · Vertraulich · April 2026</div>
+</section>
+
+<!-- 04 ERSTGESPRÄCH -->
+<section id="erstgespraech">
+  <div class="eyebrow">Erstgespräch-Vorbereitung</div>
+  <h1>Das Gespräch<br>mit Corinna</h1>
+  <p class="lead">Konkrete Vorbereitung für ein erstes, offenes Sondierungsgespräch — Agenda, Fragen, mögliche Stolpersteine und was ein gutes Ergebnis ausmacht.</p>
+  <hr class="divider">
+  <div class="grid-2">
+    <div>
+      <div class="eyebrow">Ziel des Gesprächs</div>
+      <h2>Was du rausfinden willst</h2>
+      <ul class="check-list">
+        <li>Hat Corinna grundsätzliches Interesse an einer Kollaboration?</li>
+        <li>Wie steht sie zu Versicherungs-/IT-Themen als Betätigungsfeld?</li>
+        <li>Sind Arbeitsweise, Werte und Ambitionsniveau kompatibel?</li>
+        <li>Welche Kapazität hat sie — nebenbei oder als Hauptsache?</li>
+        <li>Kann man mit ihr direkt und schnell sein?</li>
+      </ul>
+    </div>
+    <div class="card card-accent">
+      <div class="eyebrow">Format-Empfehlung</div>
+      <h3>60–90 Min. persönlich</h3>
+      <p>Nicht als Video-Call. Ein gemeinsamer Kaffee in Stuttgart schafft eine ganz andere Gesprächsdynamik — und signalisiert, dass es dir ernst ist.</p>
+      <p>Kein Deck mitbringen. Erst zuhören, dann positionieren.</p>
+    </div>
+  </div>
+  <hr class="divider">
+  <div class="eyebrow">Gesprächsstruktur</div>
+  <h2>Vorgeschlagene Agenda</h2>
+  <table>
+    <thead><tr><th>Zeit</th><th>Thema</th><th>Ziel</th></tr></thead>
+    <tbody>
+      <tr>
+        <td style="font-family:var(--mono);font-size:0.75rem;white-space:nowrap;">0–15 Min.</td>
+        <td><strong>Ankommen & gegenseitiges Update</strong><br><span style="font-size:0.82rem;color:var(--muted);">Was macht Corinna gerade? Worauf ist sie stolz? Was nervt?</span></td>
+        <td>Rapport, Energie spüren</td>
+      </tr>
+      <tr>
+        <td style="font-family:var(--mono);font-size:0.75rem;white-space:nowrap;">15–30 Min.</td>
+        <td><strong>Die Idee vorstellen</strong><br><span style="font-size:0.82rem;color:var(--muted);">Kurze, ehrliche Beschreibung des Konzepts — ohne Pitch-Modus.</span></td>
+        <td>Erste Reaktion beobachten</td>
+      </tr>
+      <tr>
+        <td style="font-family:var(--mono);font-size:0.75rem;white-space:nowrap;">30–55 Min.</td>
+        <td><strong>Offene Exploration</strong><br><span style="font-size:0.82rem;color:var(--muted);">Ihre Fragen, Skepsis, Ideen — unmoderiert zulassen.</span></td>
+        <td>Echte Haltung verstehen</td>
+      </tr>
+      <tr>
+        <td style="font-family:var(--mono);font-size:0.75rem;white-space:nowrap;">55–70 Min.</td>
+        <td><strong>Konkreter nächster Schritt</strong><br><span style="font-size:0.82rem;color:var(--muted);">Kein Abschluss, aber ein klares „Was machen wir als nächstes?"</span></td>
+        <td>Verbindlichkeit testen</td>
+      </tr>
+    </tbody>
+  </table>
+  <hr class="divider">
+  <div class="eyebrow">Ihren Methodenkoffer verstehen</div>
+  <h2>Was Corinna einbringt — und warum es zählt</h2>
+  <div class="card card-gold" style="margin-bottom:1.5rem;">
+    <p>Im Gespräch lohnt es sich, Corinna zu fragen, wie sie ihre systemische Methodik konkret einsetzt — nicht als akademische Übung, sondern als praktisches Werkzeug. Die SySt®-Strukturaufstellungen etwa sind besonders dann wirkungsvoll, wenn Führungsteams in AI-Transformationen feststecken, ohne zu wissen warum. Das ist genau das Szenario, das deine Kunden kennen.</p>
+    <p>Realkonstruktivismus und Trigon sind für IT-nahe Entscheider oft unbekannt — aber das ist ein Vorteil: Es öffnet Gespräche, die reine Tech-Beratung nicht führen kann.</p>
+  </div>
+  <h3 style="margin-bottom:0.8rem;">Fragen, die Corinna zur Methodik öffnen</h3>
+  <ul class="check-list" style="margin-bottom:2rem;">
+    <li>„Kannst du mir ein Beispiel geben, wo eine Aufstellung etwas sichtbar gemacht hat, das sonst nicht aufgetaucht wäre?"</li>
+    <li>„Wie erklärst du Trigon-Methodik jemandem, der nur IT-Projekte kennt?"</li>
+    <li>„Wann setzt du Realkonstruktivismus ein — und wann nicht?"</li>
+    <li>„Hast du schon mit Unternehmen in digitalen Transformationen gearbeitet — und was war da systemisch anders als in klassischen Veränderungsprojekten?"</li>
+  </ul>
+  <hr class="divider">
+  <h2>Was du konkret fragen kannst</h2>
+  <div class="grid-2">
+    <div>
+      <h3>Zur Motivation</h3>
+      <ul class="check-list" style="margin-bottom:1.5rem;">
+        <li>„Was reizt dich an deiner Arbeit gerade am meisten — und was vermisst du?"</li>
+        <li>„Hast du Kunden, bei denen du denkst: hier fehlt jemand mit Tech-Tiefe an meiner Seite?"</li>
+        <li>„Wie stellst du dir Zusammenarbeit vor — eher lose oder engmaschig?"</li>
+      </ul>
+      <h3>Zur Branche</h3>
+      <ul class="check-list">
+        <li>„Versicherung und IT ist ein spezifisches Feld — interessiert dich das, oder ist es zu eng?"</li>
+        <li>„Hast du schon mit Finanzdienstleistern gearbeitet? Wie war das?"</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Zur Operativen Realität</h3>
+      <ul class="check-list" style="margin-bottom:1.5rem;">
+        <li>„Wie viel Kapazität könntest du für eine gemeinsame Positionierung einbringen?"</li>
+        <li>„Was wäre für dich ein klares Nein für eine Zusammenarbeit?"</li>
+        <li>„Wie gehst du mit Situationen um, wo wir inhaltlich unterschiedlicher Meinung sind?"</li>
+      </ul>
+      <h3>Zur Ambition</h3>
+      <ul class="check-list">
+        <li>„Wo siehst du dich in drei Jahren — was soll anders sein als heute?"</li>
+        <li>„Was wäre für dich Erfolg in so einer Zusammenarbeit?"</li>
+      </ul>
+    </div>
+  </div>
+  <hr class="divider">
+  <h2>Mögliche Einwände — und wie du damit umgehst</h2>
+  <table>
+    <thead><tr><th>Einwand</th><th>Mögliche Antwort</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>„Ich kenne mich mit Versicherungs-IT nicht aus."</td>
+        <td>„Das brauchst du nicht. Die Branchenkenntnis bringe ich mit. Du bringst das, was ich nicht habe: systemische Tiefe und die Fähigkeit, Führungskräfte wirklich zu begleiten."</td>
+      </tr>
+      <tr>
+        <td>„Ich bin zu ausgelastet gerade."</td>
+        <td>„Kein Problem. Lass uns schauen, was in 3–6 Monaten realistisch ist — erst mal nur ein Pilotprojekt gemeinsam testen."</td>
+      </tr>
+      <tr>
+        <td>„Ich mache lieber keine feste Partnerschaft."</td>
+        <td>„Volle Zustimmung. Ich denke an projektbasierte Kollaboration — kein gemeinsames Unternehmen, keine Bindung."</td>
+      </tr>
+      <tr>
+        <td>„Was wenn unsere Kunden sich überschneiden?"</td>
+        <td>„Das ist gut, nicht schlimm. Gemeinsame Kunden sind der Beweis, dass das Modell funktioniert."</td>
+      </tr>
+    </tbody>
+  </table>
+  <hr class="divider">
+  <div class="grid-2">
+    <div class="card" style="border-left:3px solid #2e7d32;">
+      <div class="eyebrow" style="color:#2e7d32;">Grünes Licht</div>
+      <h3>Gutes Ergebnis</h3>
+      <p>Corinna ist neugierig, stellt eigene Fragen, denkt laut mit — und schlägt vor, einen konkreten gemeinsamen Fall als Piloten zu identifizieren.</p>
+    </div>
+    <div class="card" style="border-left:3px solid #c62828;">
+      <div class="eyebrow" style="color:#c62828;">Rotes Licht</div>
+      <h3>Zeichen, die zögern lassen</h3>
+      <p>Sie ist höflich aber passiv, stellt keine eigenen Fragen, spricht viel von Risiken oder zeigt kein Interesse an der Zielgruppe Versicherung.</p>
+    </div>
+  </div>
+  <blockquote>„Du musst sie nicht überzeugen —<br>du musst herausfinden, ob sie überzeugt werden will."</blockquote>
+  <div class="footer-note">clarity.ai · Erstgespräch-Vorbereitung · Persönlich · April 2026</div>
+</section>
+
+</div><!-- /main-content -->
+
+<script>
+  const PASSWORT = 'Idee2026';
+  const SESSION_KEY = 'clarity_ai_auth';
+
+  function checkPassword() {
+    const input = document.getElementById('pw-input');
+    const error = document.getElementById('login-error');
+    if (input.value === PASSWORT) {
+      sessionStorage.setItem(SESSION_KEY, '1');
+      unlock();
+    } else {
+      input.classList.add('error');
+      error.textContent = 'Falsches Passwort. Bitte erneut versuchen.';
+      input.value = '';
+      setTimeout(() => input.classList.remove('error'), 400);
+    }
+  }
+
+  function unlock() {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('main-content').style.display = 'block';
+  }
+
+  function lock() {
+    sessionStorage.removeItem(SESSION_KEY);
+    document.getElementById('main-content').style.display = 'none';
+    document.getElementById('login-screen').style.display = 'flex';
+    document.getElementById('pw-input').value = '';
+    document.getElementById('login-error').textContent = '';
+  }
+
+  function show(id, el) {
+    document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-tabs a').forEach(a => a.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    el.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // Session-Persistenz innerhalb der Browser-Session
+  if (sessionStorage.getItem(SESSION_KEY) === '1') unlock();
+</script>
+</body>
+</html>
