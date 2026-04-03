@@ -1,2 +1,3 @@
+# complexity-organizer.com
 # clarity.ai
-Test Geschäftsmodell Webseite
+Aufbau und Idee Geschäftsmodell Klarheit, Mut, Gelassenheit
